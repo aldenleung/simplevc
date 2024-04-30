@@ -32,7 +32,7 @@ The ideas behind this simple version control system:
 
 * There is no restriction on the function arguments, except the argument name `version` is reserved for version control.
 
-* This is a simple and fast but NOT a standard version control system. It only serves as a utility for development. 
+* This is a simple and fast but NOT a standard version control system. 
 
 ## Installation
 

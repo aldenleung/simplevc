@@ -301,7 +301,7 @@ def module_main(module):
 	if i == len(sys.argv):
 		display_help = True
 	
-	_parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description=f"version-{module._version}")
+	_parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description=f"version-{module._module_display_version}" if module._module_display_version is not None else "")
 	
 	_subparsers = _parser.add_subparsers(dest='_subparser_name')
 	_return_routines = {} 
@@ -383,7 +383,7 @@ def module_main(module):
 		except argparse.ArgumentError:
 			print("Some errors occur in arguments")
 
-def register(module):
+def register(module, module_display_version=None):
 	'''
 	Register the simple version control system to the target module. 
 	
@@ -394,7 +394,7 @@ def register(module):
 	setattr(module, "_method_dicts", {})
 	setattr(module, "_tool_dicts", {})
 	set_module_version(module, _default_version)
-	
+	setattr(module, "_module_display_version", module_display_version)
 	
 	def set_version(version):
 		'''
