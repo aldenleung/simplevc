@@ -286,7 +286,8 @@ def module_main(module):
 	'''
 	import argparse
 	import sys
-	
+	from types import GenericAlias
+	import typing
 	display_help = False
 	i = 1
 	while i < len(sys.argv):
@@ -322,12 +323,7 @@ def module_main(module):
 				kwargs["help"] = helps[param.name]
 			else:
 				kwargs["help"] = "_"
-				
-			if param.name in types:
-				kwargs["type"] = types[param.name]
-			elif param.annotation != inspect._empty:
-				kwargs["type"] = param.annotation
-				
+
 			if param.name in defaults:
 				kwargs["default"] = defaults[param.name] 
 				kwargs["required"] = False
@@ -336,6 +332,18 @@ def module_main(module):
 				kwargs["required"] = False
 			else:
 				kwargs["required"] = True
+				
+			if param.name in types:
+				kwargs["type"] = types[param.name]
+			elif param.annotation != inspect._empty:
+				if isinstance(param.annotation, GenericAlias):
+					if typing.get_origin(param.annotation) != list:
+						raise Exception("Only list is supported in GenericAlias")
+					kwargs["type"] = typing.get_args(param.annotation)[0]
+					kwargs["nargs"] = "*"
+				else:
+					kwargs["type"] = param.annotation
+				
 				
 			parser.add_argument(f"-{param.name}", **kwargs)
 		

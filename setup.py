@@ -7,7 +7,7 @@ requirements = []
 
 setup(
 	name="simplevc",
-	version="0.0.2",
+	version="0.0.3",
 	author="Alden Leung",
 	author_email="alden.leung@gmail.com",
 	description="A simple Python version control package",
@@ -17,8 +17,6 @@ setup(
 	packages=find_packages(),
 	install_requires=requirements,
 	classifiers=[
-		"Programming Language :: Python :: 3.7",
-		"Programming Language :: Python :: 3.8",
 		"Programming Language :: Python :: 3.9",
 		"License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 	],
