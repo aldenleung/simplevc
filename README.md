@@ -45,7 +45,6 @@ pip install simplevc
 ### Example module registered for version control
 
 ```python
-
 ### example/pm.py ###
 
 # Suppose you want to set simple version control in pm.py
@@ -163,3 +162,25 @@ python pm.py copy_file --srcfile my_src_file --dstfile my_dst_file
 from example import pm
 pm.copy_file(my_src_file, my_dst_file)
 ```
+
+### Generating a tool manual for the example module
+
+```python
+import simplevc
+from example import pm
+print(simplevc.generate_tool_manual(pm))
+
+```
+
+Output:
+
+```markdown
+## All tools
+### copy_file
+*version: 20200701*
+File copy method
+#### Parameters
+- **-srcfile**: Input source file
+- **-dstfile**: Output source file
+```
+

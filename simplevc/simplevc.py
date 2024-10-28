@@ -524,3 +524,57 @@ def register(module, module_display_version=None):
 	
 	_registered_modules.append(module)
 	
+def generate_tool_manual(module, version=None):
+	'''
+	Automatically generate a tool manual for a registered module.
+	
+	'''
+	from types import GenericAlias
+	import simplevc
+	import typing
+	import inspect
+	lines = []
+	lines.append("## " + "All tools")
+	root_version = version
+	for func_name, tool_dict in module._tool_dicts.items():
+		if root_version is not None:
+			version = root_version
+		else:
+			version = module._version
+		rversion = _get_last_version(sorted(tool_dict.keys()), version)
+		if rversion is None:
+			continue		
+		signature, description, helps, types, defaults, return_routine = tool_dict[rversion]
+		lines.append("### " + func_name)
+		lines.append(f"*version: {rversion}*")
+		lines.append(description if description is not None else "")
+		lines.append("#### Parameters")
+
+		for param in signature.parameters.values():
+			kwargs = {}
+			if param.name in helps:
+				kwargs["help"] = helps[param.name]
+			else:
+				kwargs["help"] = "_"
+
+			if param.name in defaults:
+				kwargs["default"] = defaults[param.name] 
+				kwargs["required"] = False
+			elif param.default != inspect._empty:
+				kwargs["default"] = param.default 
+				kwargs["required"] = False
+			else:
+				kwargs["required"] = True
+
+			if param.name in types:
+				kwargs["type"] = types[param.name]
+			elif param.annotation != inspect._empty:
+				if isinstance(param.annotation, GenericAlias):
+					if typing.get_origin(param.annotation) != list:
+						raise Exception("Only list is supported in GenericAlias")
+					kwargs["type"] = typing.get_args(param.annotation)[0]
+					kwargs["nargs"] = "*"
+				else:
+					kwargs["type"] = param.annotation
+			lines.append(f"- **-{param.name}**: {'[optional] ' if not kwargs['required'] else ''}{kwargs['help']}{(' [default: ' + str(kwargs['default']) + ']') if 'default' in kwargs else ''}")
+	return("\n".join(lines))

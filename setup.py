@@ -7,7 +7,7 @@ requirements = []
 
 setup(
 	name="simplevc",
-	version="0.0.3",
+	version="0.0.4",
 	author="Alden Leung",
 	author_email="alden.leung@gmail.com",
 	description="A simple Python version control package",
